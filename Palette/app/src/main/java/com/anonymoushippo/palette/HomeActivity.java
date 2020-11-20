@@ -2,6 +2,7 @@ package com.anonymoushippo.palette;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.GradientDrawable;
@@ -20,6 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.github.mmin18.widget.RealtimeBlurView;
 
 import java.io.IOException;
@@ -53,6 +55,10 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
     private int FLAG;
 
     private Animation popUpAnimation;
+
+    /* Loading View */
+    ImageView loadingView;
+    View backView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +96,12 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
 
         popUpAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.pop_up);
 
+        // Loading
+        loadingView = findViewById(R.id.LoadingView);
+        backView = findViewById(R.id.LoadingBack);
+        GlideDrawableImageViewTarget loadingImage = new GlideDrawableImageViewTarget(loadingView);
+        Glide.with(this).load(R.drawable.loading).into(loadingImage);
+
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,6 +133,9 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                backView.setVisibility(View.VISIBLE);
+                loadingView.setVisibility(View.VISIBLE);
+                SharedPreferences preferences = getSharedPreferences("com.AnonymousHippo.Palette.sharePreference", MODE_PRIVATE);
                 keys[0] = "email";
                 data[0] = "test@test.com";
 
@@ -128,11 +143,10 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                     public void run() {
                         String resultString = HttpPostData.POST("account/getLike/", keys, data);
 
-                        if (result.equals("-1") || result.equals("SEND_FAIL")) {
+                        if (resultString.equals("-1") || resultString.equals("SEND_FAIL")) {
                             //
                         } else {
                             String[] resultList = resultString.split("-");
-                            Log.i("RESULT", result);
 
                             ArrayList<Bitmap> tempList = new ArrayList<Bitmap>();
 
@@ -162,7 +176,10 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
         portfolioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getApplicationContext(), PortfolioActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+                finish();
             }
         });
 
@@ -292,6 +309,7 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             for (int j = 0; j < Math.min(18, randomCodeList.size()); j++) {
                 Glide.with(getApplicationContext()).load("http://141.164.40.63:8000/media/database/" + randomCodeList.get(j) + "/" + randomNumberList.get(j) + ".jpg").into(imageViews[i++]);
             }
+            loadingView.setVisibility(View.INVISIBLE);
         }
     };
 
