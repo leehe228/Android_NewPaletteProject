@@ -125,6 +125,9 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
 
     private ProgressBar progressBar;
 
+    private String CREATOR;
+    private String CATEGORY;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -208,6 +211,8 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
         TITLES = intent.getStringExtra("TITLES").split("-");
         CONTENTS = intent.getStringExtra("CONTENTS").split("-");
         String tempValue = intent.getStringExtra("NUMBER");
+        CREATOR = intent.getStringExtra("CREATOR");
+        CATEGORY = intent.getStringExtra("CATEGORY");
         if(tempValue == null){
             MAX_INDEX = 0;
         }
@@ -458,6 +463,8 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
                 tts.shutdown();
 
                 Intent intent = new Intent(getApplicationContext(), GalleryEndActivity.class);
+                intent.putExtra("CREATOR", CREATOR);
+                intent.putExtra("CATEGORY", CATEGORY);
                 startActivity(intent);
                 overridePendingTransition(0, 0);
                 finish();
@@ -582,6 +589,8 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
         tts.stop();
         tts.shutdown();
         Intent intent = new Intent(getApplicationContext(), GalleryEndActivity.class);
+        intent.putExtra("CREATOR", CREATOR);
+        intent.putExtra("CATEGORY", CATEGORY);
         startActivity(intent);
         overridePendingTransition(0, 0);
         finish();
@@ -635,7 +644,7 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
                 Speech();
             }
 
-            progressBar.setProgress((int)(((double)INDEX / (double)MAX_INDEX) * 100));
+            progressBar.setProgress((int)(((double)INDEX / (double)(MAX_INDEX - 1)) * 100));
         }
     };
 
@@ -705,6 +714,8 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
 
                 if (INDEX == MAX_INDEX - 1) {
                     Intent intent = new Intent(getApplicationContext(), GalleryEndActivity.class);
+                    intent.putExtra("CREATOR", CREATOR);
+                    intent.putExtra("CATEGORY", CATEGORY);
                     startActivity(intent);
                     overridePendingTransition(0, 0);
                     finish();

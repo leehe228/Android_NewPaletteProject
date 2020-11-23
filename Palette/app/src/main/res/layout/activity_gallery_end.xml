@@ -5,6 +5,164 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".GalleryEndActivity">
+        tools:context=".GalleryEndActivity"
+        android:background="#131313">
+
+    <TextView
+            android:id="@+id/GalleryEnd_text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="이 전시회의 작가"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:fontFamily="@font/nanumeb"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp" />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#161616"
+            app:layout_constraintTop_toBottomOf="@id/GalleryEnd_text1"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_marginTop="15dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/Portfolio_TextView_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:fontFamily="@font/nanumeb"
+                android:textColor="@color/white" />
+
+        <TextView
+                android:id="@+id/Portfolio_TextView_school"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:textSize="12dp"
+                android:fontFamily="@font/nanumr"
+                android:text="Konkuk Univ. ArtDesign."
+                android:textColor="@color/white" />
+
+        <TextView
+                android:id="@+id/Portfolio_TextView_info"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:textSize="12dp"
+                android:fontFamily="@font/nanumr"
+                android:text="한국의 멋과 아름다운 풍경을 세계에 알립니다. 주로 사진전을 엽니다."
+                android:textColor="@color/white" />
+
+        <TextView
+                android:id="@+id/Portfolio_TextView_contact"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:textSize="12dp"
+                android:fontFamily="@font/nanumr"
+                android:text="test@test.com"
+                android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+                android:id="@+id/GalleryEnd_text3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이 전시회는 마음에 드셨나요?"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:fontFamily="@font/nanumeb" />
+
+        <ImageButton
+                android:id="@+id/GalleryEnd_loveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/un_love"
+                android:background="#00000000"
+                android:layout_marginTop="20dp" />
+
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/GalleryEnd_text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/GalleryEnd_LinearLayout_similar"
+            android:text="비슷한 전시회"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:fontFamily="@font/nanumeb"
+            android:layout_marginStart="20dp" />
+
+    <LinearLayout
+            android:id="@+id/GalleryEnd_LinearLayout_similar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+        <Space
+                android:layout_width="18dp"
+                android:layout_height="match_parent" />
+
+        <com.anonymoushippo.palette.SquareImageView
+                android:id="@+id/GalleryEnd_ImageView_1"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="#E8E8E8"
+                android:scaleType="centerCrop" />
+
+        <Space
+                android:layout_width="18dp"
+                android:layout_height="match_parent" />
+
+        <com.anonymoushippo.palette.SquareImageView
+                android:id="@+id/GalleryEnd_ImageView_2"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="#E8E8E8"
+                android:scaleType="centerCrop" />
+
+        <Space
+                android:layout_width="18dp"
+                android:layout_height="match_parent" />
+
+        <com.anonymoushippo.palette.SquareImageView
+                android:id="@+id/GalleryEnd_ImageView_3"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="#E8E8E8"
+                android:scaleType="centerCrop" />
+
+        <Space
+                android:layout_width="18dp"
+                android:layout_height="match_parent" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

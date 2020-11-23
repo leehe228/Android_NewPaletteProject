@@ -76,6 +76,8 @@ public class GalleryInformationActivity extends BaseActivity {
                 intent.putExtra("TITLES", artTitles);
                 intent.putExtra("CONTENTS", artContents);
                 intent.putExtra("NUMBER", artNumber);
+                intent.putExtra("CREATOR", creator);
+                intent.putExtra("CATEGORY", category);
                 Log.e("DATA", CODE + artTitles + artContents + artNumber);
                 startActivity(intent);
                 overridePendingTransition(0, 0);

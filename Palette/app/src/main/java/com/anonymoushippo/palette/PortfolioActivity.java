@@ -40,6 +40,7 @@ public class PortfolioActivity extends BaseActivity {
         backView = findViewById(R.id.LoadingBack);
         GlideDrawableImageViewTarget loadingImage = new GlideDrawableImageViewTarget(loadingView);
         Glide.with(this).load(R.drawable.loading).into(loadingImage);
+        loadingView.setVisibility(View.INVISIBLE);
 
         ImageButton homeButton = findViewById(R.id.HomeButton);
         ImageButton popularButton = findViewById(R.id.PopularButton);
@@ -161,6 +162,10 @@ public class PortfolioActivity extends BaseActivity {
     };
 
     public void onTitleClicked(View view){
+
+    }
+
+    public void onBlurClicked(View view){
 
     }
 
