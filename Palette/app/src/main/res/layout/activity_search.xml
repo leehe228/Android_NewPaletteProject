@@ -13,7 +13,7 @@
             android:layout_height="0dp"
             android:divider="#FFFFFF"
             android:dividerHeight="0px"
-            android:layout_marginTop="130dp"
+            android:layout_marginTop="140dp"
             android:layout_marginBottom="60dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +25,7 @@
     <EditText
             android:id="@+id/Search_EditText_search"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
@@ -50,7 +50,7 @@
             app:layout_constraintTop_toTopOf="@id/Search_EditText_search"
             app:layout_constraintBottom_toBottomOf="@id/Search_EditText_search"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="24dp"
             app:srcCompat="@drawable/mic"
             android:background="#00FFFFFF"
             android:scaleType="center" />
@@ -141,6 +141,20 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+            android:id="@+id/Search_TextView_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="음성으로 검색하거나 검색어를 입력해주세요"
+            android:textSize="18dp"
+            android:textColor="#707070"
+            android:fontFamily="@font/nanumr"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

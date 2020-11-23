@@ -4,7 +4,7 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
-import android.widget.ImageView;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -17,9 +17,6 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ListView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
@@ -43,6 +40,7 @@ public class SearchActivity extends BaseActivity {
     ArrayList<String> infoList;
     ArrayList<String> codeList;
     private EditText searchEditText;
+    private TextView warningTextView;
 
     private SearchAdapter resultAdapter;
 
@@ -53,6 +51,8 @@ public class SearchActivity extends BaseActivity {
     // STT
     SpeechRecognizer mRecognizer;
     Intent sttIntent;
+
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,13 +72,23 @@ public class SearchActivity extends BaseActivity {
         infoList = new ArrayList<>();
         codeList = new ArrayList<>();
 
-        ListView listView = findViewById(R.id.SearchList_ListView);
+        listView = findViewById(R.id.SearchList_ListView);
 
         ImageButton micButton = findViewById(R.id.Search_TTS);
+
+        warningTextView = findViewById(R.id.Search_TextView_warning);
 
         // Adapter
         resultAdapter = new SearchAdapter(this, adapterInfoList);
         listView.setAdapter(resultAdapter);
+
+        listView.setOnItemClickListener((adapterView, view, i, l) -> {
+            Intent intent = new Intent(getApplicationContext(), GalleryInformationActivity.class);
+            intent.putExtra("CODE", adapterCodeList.get(i));
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+            finish();
+        });
 
         // STT
         sttIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -99,6 +109,13 @@ public class SearchActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(searchEditText.getText().toString().length() == 0){
+                    warningTextView.setText("음성으로 검색하거나 검색어를 입력해주세요");
+                    warningTextView.setVisibility(View.VISIBLE);
+                } else{
+                    warningTextView.setText("검색 결과가 없습니다");
+                }
+
                 adapterCodeList.clear();
                 adapterInfoList.clear();
                 if (searchEditText.getText().length() > 0){
@@ -177,26 +194,35 @@ public class SearchActivity extends BaseActivity {
                         if (resultString.equals("-1") || resultString.equals("SEND_FAIL")) {
                             //
                         } else {
-                            String[] resultList = resultString.split("-");
+                            if (resultString.equals("")){
+                                UserLike.setImages(null);
+                                Message msg = noLikeOpenHandler.obtainMessage();
+                                noLikeOpenHandler.sendMessage(msg);
+                            } else{
+                                String[] resultList = resultString.split("-");
 
-                            ArrayList<Bitmap> tempList = new ArrayList<Bitmap>();
+                                ArrayList<Bitmap> tempList = new ArrayList<>();
+                                ArrayList<String> tempCodeList = new ArrayList<>();
 
-                            try {
-                                for (String code : resultList) {
-                                    java.net.URL url = new java.net.URL("http://141.164.40.63:8000/media/database/" + code + "/1.jpg");
-                                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                                    connection.setDoInput(true);
-                                    connection.connect();
-                                    InputStream input = connection.getInputStream();
-                                    tempList.add(BitmapFactory.decodeStream(input));
+                                try {
+                                    for (String code : resultList) {
+                                        java.net.URL url = new java.net.URL("http://141.164.40.63:8000/media/database/" + code + "/1.jpg");
+                                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                                        connection.setDoInput(true);
+                                        connection.connect();
+                                        InputStream input = connection.getInputStream();
+                                        tempList.add(BitmapFactory.decodeStream(input));
+                                        tempCodeList.add(code);
+                                    }
+
+                                    UserLike.setImages(tempList);
+                                    UserLike.setCodes(tempCodeList);
+                                    Message msg = likeOpenHandler.obtainMessage();
+                                    likeOpenHandler.sendMessage(msg);
                                 }
-
-                                UserLike.setImages(tempList);
-                                Message msg = likeOpenHandler.obtainMessage();
-                                likeOpenHandler.sendMessage(msg);
-                            }
-                            catch (IOException e) {
-                                e.printStackTrace();
+                                catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }
@@ -392,6 +418,19 @@ public class SearchActivity extends BaseActivity {
         @SuppressLint({"HandlerLeak", "SetTextI18n"})
         public void handleMessage(Message msg) {
             resultAdapter.notifyDataSetChanged();
+            warningTextView.setVisibility(View.INVISIBLE);
+        }
+    };
+
+    @SuppressLint("HandlerLeak")
+    Handler noLikeOpenHandler = new Handler() {
+        @Override
+        @SuppressLint({"HandlerLeak", "SetTextI18n"})
+        public void handleMessage(Message msg) {
+            Intent intent = new Intent(getApplicationContext(), NoLikeActivity.class);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+            finish();
         }
     };
 
@@ -401,6 +440,7 @@ public class SearchActivity extends BaseActivity {
         @SuppressLint({"HandlerLeak", "SetTextI18n"})
         public void handleMessage(Message msg) {
             resultAdapter.notifyDataSetChanged();
+            warningTextView.setVisibility(View.VISIBLE);
         }
     };
 

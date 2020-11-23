@@ -48,7 +48,6 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
     RealtimeBlurView backBlurView;
     LinearLayout popUpInfoView;
     TextView popUpTitleTextView, popUpCreatorTextView;
-    View popUpInnerView;
 
     private String infoResult;
 
@@ -59,6 +58,8 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
     /* Loading View */
     ImageView loadingView;
     View backView;
+
+    private String nowCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +87,6 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
         popUpInfoView = findViewById(R.id.Main_InfoView_PopUp);
         popUpTitleTextView = findViewById(R.id.Main_TextView_PopUpTitle);
         popUpCreatorTextView = findViewById(R.id.Main_TextView_PopUpCreator);
-        popUpInnerView = findViewById(R.id.Main_InnerView_PopUp);
 
         ImageButton homeButton = findViewById(R.id.HomeButton);
         ImageButton popularButton = findViewById(R.id.PopularButton);
@@ -95,6 +95,8 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
         ImageButton portfolioButton = findViewById(R.id.PortfolioButton);
 
         popUpAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.pop_up);
+
+        nowCode = "";
 
         // Loading
         loadingView = findViewById(R.id.LoadingView);
@@ -146,27 +148,39 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                         if (resultString.equals("-1") || resultString.equals("SEND_FAIL")) {
                             //
                         } else {
-                            String[] resultList = resultString.split("-");
+                            if (resultString.equals("")){
+                                UserLike.setImages(null);
+                                UserLike.setCodes(null);
+                                Message msg = noLikeOpenHandler.obtainMessage();
+                                noLikeOpenHandler.sendMessage(msg);
+                            }
 
-                            ArrayList<Bitmap> tempList = new ArrayList<Bitmap>();
+                            else {
+                                String[] resultList = resultString.split("-");
 
-                            try {
-                                for (String code : resultList) {
-                                    java.net.URL url = new java.net.URL("http://141.164.40.63:8000/media/database/" + code + "/1.jpg");
-                                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                                    connection.setDoInput(true);
-                                    connection.connect();
-                                    InputStream input = connection.getInputStream();
-                                    tempList.add(BitmapFactory.decodeStream(input));
+                                ArrayList<Bitmap> tempList = new ArrayList<>();
+                                ArrayList<String> tempCodeList = new ArrayList<>();
+
+                                try {
+                                    for (String code : resultList) {
+                                        java.net.URL url = new java.net.URL("http://141.164.40.63:8000/media/database/" + code + "/1.jpg");
+                                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                                        connection.setDoInput(true);
+                                        connection.connect();
+                                        InputStream input = connection.getInputStream();
+                                        tempList.add(BitmapFactory.decodeStream(input));
+                                        tempCodeList.add(code);
+                                    }
+
+                                    UserLike.setImages(tempList);
+                                    UserLike.setCodes(tempCodeList);
+                                    Message msg = likeOpenHandler.obtainMessage();
+                                    likeOpenHandler.sendMessage(msg);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
+                            }
 
-                                UserLike.setImages(tempList);
-                                Message msg = likeOpenHandler.obtainMessage();
-                                likeOpenHandler.sendMessage(msg);
-                            }
-                            catch (IOException e) {
-                                e.printStackTrace();
-                            }
                         }
                     }
                 }.start();
@@ -187,12 +201,32 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
         FLAG = 0;
 
         // Listener
-        View.OnLongClickListener onLongClickListener = new ImageButton.OnLongClickListener(){
+        View.OnLongClickListener onLongClickListener = new ImageButton.OnLongClickListener() {
 
             @Override
             public boolean onLongClick(View v) {
-                for(int i = 0; i < imageViews.length; i++){
-                    if(v.getId() == imageViews[i].getId()){
+                for (int i = 0; i < imageViews.length; i++) {
+                    if (v.getId() == imageViews[i].getId()) {
+                        Intent intent = new Intent(getApplicationContext(), GalleryInformationActivity.class);
+                        intent.putExtra("CODE", randomCodeList.get(i));
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        finish();
+                        break;
+                    }
+                }
+                return true;
+            }
+        };
+
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < imageViews.length; i++) {
+                    if (v.getId() == imageViews[i].getId()) {
+                        nowCode = randomCodeList.get(i);
+
                         Glide.with(getApplicationContext()).load("http://141.164.40.63:8000/media/database/" + randomCodeList.get(i) + "/" + randomNumberList.get(i) + ".jpg").into(popUpView);
                         FLAG = 1;
                         int finalI = i;
@@ -206,7 +240,6 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                         break;
                     }
                 }
-                return true;
             }
         };
 
@@ -238,6 +271,7 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             imageView.setBackground(drawable);
             imageView.setClipToOutline(true);
             imageView.setOnLongClickListener(onLongClickListener);
+            imageView.setOnClickListener(onClickListener);
         }
 
         popUpView.setBackground(drawable);
@@ -246,7 +280,7 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
         init();
     }
 
-    public void init(){
+    public void init() {
 
         keys[0] = "email";
         data[0] = "test@test.com";
@@ -273,7 +307,7 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
 
                     Random random = new Random();
 
-                    for(Integer integer : codeList){
+                    for (Integer integer : codeList) {
                         randomCodeList.add(recCodeList.get(integer));
                         randomNumberList.add(random.nextInt(3) + 1);
                     }
@@ -283,6 +317,14 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                 }
             }
         }.start();
+    }
+
+    public void onBigImageClicked(View view) {
+        Intent intent = new Intent(getApplicationContext(), GalleryInformationActivity.class);
+        intent.putExtra("CODE", nowCode);
+        startActivity(intent);
+        overridePendingTransition(0, 0);
+        finish();
     }
 
     @Override
@@ -326,6 +368,18 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
     };
 
     @SuppressLint("HandlerLeak")
+    Handler noLikeOpenHandler = new Handler() {
+        @Override
+        @SuppressLint({"HandlerLeak", "SetTextI18n"})
+        public void handleMessage(Message msg) {
+            Intent intent = new Intent(getApplicationContext(), NoLikeActivity.class);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+            finish();
+        }
+    };
+
+    @SuppressLint("HandlerLeak")
     Handler setInfoPopUpHandler = new Handler() {
         @Override
         @SuppressLint({"HandlerLeak", "SetTextI18n"})
@@ -336,24 +390,21 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             popUpView.setVisibility(View.VISIBLE);
             backBlurView.setVisibility(View.VISIBLE);
             popUpInfoView.setVisibility(View.VISIBLE);
-            popUpInnerView.setVisibility(View.VISIBLE);
 
             popUpView.startAnimation(popUpAnimation);
             popUpInfoView.startAnimation(popUpAnimation);
-            popUpInnerView.startAnimation(popUpAnimation);
         }
     };
 
-    public void onTitleClicked(View view){
+    public void onTitleClicked(View view) {
         Message msg = refreshHandler.obtainMessage();
         refreshHandler.sendMessage(msg);
     }
 
-    public void onBackBlurClicked(View view){
+    public void onBackBlurClicked(View view) {
         popUpView.setVisibility(View.INVISIBLE);
         backBlurView.setVisibility(View.INVISIBLE);
         popUpInfoView.setVisibility(View.INVISIBLE);
-        popUpInnerView.setVisibility(View.INVISIBLE);
 
         popUpTitleTextView.setText("");
         popUpCreatorTextView.setText("");
@@ -361,15 +412,13 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
     }
 
     @Override
-    public void onBackPressed(){
-        if (FLAG == 0){
+    public void onBackPressed() {
+        if (FLAG == 0) {
             finish();
-        }
-        else if(FLAG == 1){
+        } else if (FLAG == 1) {
             popUpView.setVisibility(View.INVISIBLE);
             backBlurView.setVisibility(View.INVISIBLE);
             popUpInfoView.setVisibility(View.INVISIBLE);
-            popUpInnerView.setVisibility(View.INVISIBLE);
 
             popUpTitleTextView.setText("");
             popUpCreatorTextView.setText("");

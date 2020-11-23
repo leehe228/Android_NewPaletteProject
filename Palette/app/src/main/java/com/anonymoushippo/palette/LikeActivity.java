@@ -3,6 +3,7 @@ package com.anonymoushippo.palette;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.os.Bundle;
 import android.widget.ImageButton;
@@ -19,6 +20,8 @@ public class LikeActivity extends BaseActivity {
     BubblePicker bubblePicker;
 
     ArrayList<Bitmap> images;
+    ArrayList<Drawable> drawables;
+    ArrayList<String> codes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,8 @@ public class LikeActivity extends BaseActivity {
         setContentView(R.layout.activity_like);
 
         images = UserLike.getImages();
+        codes = UserLike.getCodes();
+        drawables = new ArrayList<>();
 
         bubblePicker = findViewById(R.id.GetInterest_BubblePicker_main);
 
@@ -39,7 +44,9 @@ public class LikeActivity extends BaseActivity {
             @Override
             public PickerItem getItem(int i) {
                 PickerItem item = new PickerItem();
-                item.setIcon(new BitmapDrawable(images.get(i)));
+                Drawable temp = new BitmapDrawable(images.get(i));
+                item.setIcon(temp);
+                drawables.add(temp);
                 return item;
             }
         });
@@ -47,7 +54,19 @@ public class LikeActivity extends BaseActivity {
         bubblePicker.setListener(new BubblePickerListener() {
             @Override
             public void onBubbleSelected(@NotNull PickerItem pickerItem) {
-                String selectedItem = pickerItem.getTitle();
+                Drawable selectedItem = pickerItem.getIcon();
+
+                for (int i = 0; i < drawables.size(); i++) {
+                    assert selectedItem != null;
+                    if (selectedItem.equals(drawables.get(i))) {
+                        Intent intent = new Intent(getApplicationContext(), GalleryInformationActivity.class);
+                        intent.putExtra("CODE", codes.get(i));
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        finish();
+                        break;
+                    }
+                }
             }
 
             @Override

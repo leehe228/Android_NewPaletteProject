@@ -87,7 +87,7 @@ public class LoginActivity extends BaseActivity {
                                 editor.putBoolean("autoLogin", autoLoginCheckBox.isChecked());
                                 editor.apply();
 
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                                 startActivity(intent);
                                 overridePendingTransition(0, 0);
                                 finish();

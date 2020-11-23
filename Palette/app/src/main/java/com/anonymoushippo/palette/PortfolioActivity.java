@@ -92,26 +92,35 @@ public class PortfolioActivity extends BaseActivity {
                         if (resultString.equals("-1") || resultString.equals("SEND_FAIL")) {
                             //
                         } else {
-                            String[] resultList = resultString.split("-");
+                            if (resultString.equals("")){
+                                UserLike.setImages(null);
+                                Message msg = noLikeOpenHandler.obtainMessage();
+                                noLikeOpenHandler.sendMessage(msg);
+                            } else{
+                                String[] resultList = resultString.split("-");
 
-                            ArrayList<Bitmap> tempList = new ArrayList<Bitmap>();
+                                ArrayList<Bitmap> tempList = new ArrayList<Bitmap>();
+                                ArrayList<String> tempCodeList = new ArrayList<>();
 
-                            try {
-                                for (String code : resultList) {
-                                    java.net.URL url = new java.net.URL("http://141.164.40.63:8000/media/database/" + code + "/1.jpg");
-                                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                                    connection.setDoInput(true);
-                                    connection.connect();
-                                    InputStream input = connection.getInputStream();
-                                    tempList.add(BitmapFactory.decodeStream(input));
+                                try {
+                                    for (String code : resultList) {
+                                        java.net.URL url = new java.net.URL("http://141.164.40.63:8000/media/database/" + code + "/1.jpg");
+                                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                                        connection.setDoInput(true);
+                                        connection.connect();
+                                        InputStream input = connection.getInputStream();
+                                        tempList.add(BitmapFactory.decodeStream(input));
+                                        tempCodeList.add(code);
+                                    }
+
+                                    UserLike.setImages(tempList);
+                                    UserLike.setCodes(tempCodeList);
+                                    Message msg = likeOpenHandler.obtainMessage();
+                                    likeOpenHandler.sendMessage(msg);
                                 }
-
-                                UserLike.setImages(tempList);
-                                Message msg = likeOpenHandler.obtainMessage();
-                                likeOpenHandler.sendMessage(msg);
-                            }
-                            catch (IOException e) {
-                                e.printStackTrace();
+                                catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }
@@ -133,6 +142,18 @@ public class PortfolioActivity extends BaseActivity {
         @SuppressLint({"HandlerLeak", "SetTextI18n"})
         public void handleMessage(Message msg) {
             Intent intent = new Intent(getApplicationContext(), LikeActivity.class);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+            finish();
+        }
+    };
+
+    @SuppressLint("HandlerLeak")
+    Handler noLikeOpenHandler = new Handler() {
+        @Override
+        @SuppressLint({"HandlerLeak", "SetTextI18n"})
+        public void handleMessage(Message msg) {
+            Intent intent = new Intent(getApplicationContext(), NoLikeActivity.class);
             startActivity(intent);
             overridePendingTransition(0, 0);
             finish();

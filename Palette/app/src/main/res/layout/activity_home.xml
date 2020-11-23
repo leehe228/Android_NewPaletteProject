@@ -414,28 +414,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:realtimeBlurRadius="50dp"
+            app:realtimeBlurRadius="40dp"
             app:realtimeOverlayColor="#BEFFFFFF" />
-
-    <View
-            android:id="@+id/Main_InnerView_PopUp"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            android:background="#FFFFFF"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@id/Main_InfoView_PopUp"
-            app:layout_constraintEnd_toEndOf="@id/Main_ImageView_PopUp"
-            app:layout_constraintStart_toStartOf="@id/Main_ImageView_PopUp"
-            app:layout_constraintTop_toTopOf="@id/Main_ImageView_PopUp" />
 
     <com.anonymoushippo.palette.SquareImageView
             android:id="@+id/Main_ImageView_PopUp"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_margin="20dp"
+            android:layout_margin="80dp"
             android:background="#E8E8E8"
             android:elevation="6dp"
+            android:onClick="onBigImageClicked"
+            android:focusable="true"
+            android:clickable="true"
             android:scaleType="centerCrop"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -448,12 +439,12 @@
             android:layout_width="0dp"
             android:layout_height="70dp"
             android:background="@drawable/big_round_white"
-            android:elevation="6dp"
             android:orientation="vertical"
-            android:paddingStart="20dp"
+            android:paddingStart="15dp"
             android:paddingTop="10dp"
-            android:paddingEnd="20dp"
+            android:paddingEnd="15dp"
             android:paddingBottom="10dp"
+            android:layout_marginTop="15dp"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="@id/Main_ImageView_PopUp"
             app:layout_constraintStart_toStartOf="@id/Main_ImageView_PopUp"
@@ -464,7 +455,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/nanumeb"
-                android:text="제목"
                 android:textColor="#000000"
                 android:textSize="20dp" />
 
@@ -474,7 +464,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:fontFamily="@font/nanumr"
-                android:text="박하민"
                 android:textColor="#000000"
                 android:textSize="16dp" />
 

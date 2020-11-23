@@ -48,7 +48,6 @@ public class PopularActivity extends BaseActivity implements SwipeRefreshLayout.
     RealtimeBlurView backBlurView;
     LinearLayout popUpInfoView;
     TextView popUpTitleTextView, popUpCreatorTextView;
-    View popUpInnerView;
 
     private String infoResult;
 
@@ -59,6 +58,8 @@ public class PopularActivity extends BaseActivity implements SwipeRefreshLayout.
     /* Loading View */
     ImageView loadingView;
     View backView;
+
+    private String nowCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,6 @@ public class PopularActivity extends BaseActivity implements SwipeRefreshLayout.
         popUpInfoView = findViewById(R.id.Main_InfoView_PopUp);
         popUpTitleTextView = findViewById(R.id.Main_TextView_PopUpTitle);
         popUpCreatorTextView = findViewById(R.id.Main_TextView_PopUpCreator);
-        popUpInnerView = findViewById(R.id.Main_InnerView_PopUp);
 
         ImageButton homeButton = findViewById(R.id.HomeButton);
         ImageButton popularButton = findViewById(R.id.PopularButton);
@@ -90,6 +90,8 @@ public class PopularActivity extends BaseActivity implements SwipeRefreshLayout.
         ImageButton portfolioButton = findViewById(R.id.PortfolioButton);
 
         popUpAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.pop_up);
+
+        nowCode = "";
 
         // Loading
         loadingView = findViewById(R.id.LoadingView);
@@ -140,26 +142,35 @@ public class PopularActivity extends BaseActivity implements SwipeRefreshLayout.
                         if (resultString.equals("-1") || resultString.equals("SEND_FAIL")) {
                             //
                         } else {
-                            String[] resultList = resultString.split("-");
+                            if (resultString.equals("")){
+                                UserLike.setImages(null);
+                                Message msg = noLikeOpenHandler.obtainMessage();
+                                noLikeOpenHandler.sendMessage(msg);
+                            } else{
+                                String[] resultList = resultString.split("-");
 
-                            ArrayList<Bitmap> tempList = new ArrayList<Bitmap>();
+                                ArrayList<Bitmap> tempList = new ArrayList<>();
+                                ArrayList<String> tempCodeList = new ArrayList<>();
 
-                            try {
-                                for (String code : resultList) {
-                                    java.net.URL url = new java.net.URL("http://141.164.40.63:8000/media/database/" + code + "/1.jpg");
-                                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                                    connection.setDoInput(true);
-                                    connection.connect();
-                                    InputStream input = connection.getInputStream();
-                                    tempList.add(BitmapFactory.decodeStream(input));
+                                try {
+                                    for (String code : resultList) {
+                                        java.net.URL url = new java.net.URL("http://141.164.40.63:8000/media/database/" + code + "/1.jpg");
+                                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                                        connection.setDoInput(true);
+                                        connection.connect();
+                                        InputStream input = connection.getInputStream();
+                                        tempList.add(BitmapFactory.decodeStream(input));
+                                        tempCodeList.add(code);
+                                    }
+
+                                    UserLike.setImages(tempList);
+                                    UserLike.setCodes(tempCodeList);
+                                    Message msg = likeOpenHandler.obtainMessage();
+                                    likeOpenHandler.sendMessage(msg);
                                 }
-
-                                UserLike.setImages(tempList);
-                                Message msg = likeOpenHandler.obtainMessage();
-                                likeOpenHandler.sendMessage(msg);
-                            }
-                            catch (IOException e) {
-                                e.printStackTrace();
+                                catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }
@@ -181,12 +192,32 @@ public class PopularActivity extends BaseActivity implements SwipeRefreshLayout.
         FLAG = 0;
 
         // Listener
-        View.OnLongClickListener onLongClickListener = new ImageButton.OnLongClickListener(){
+        View.OnLongClickListener onLongClickListener = new ImageButton.OnLongClickListener() {
 
             @Override
             public boolean onLongClick(View v) {
                 for(int i = 0; i < imageViews.length; i++){
                     if(v.getId() == imageViews[i].getId()){
+                        Intent intent = new Intent(getApplicationContext(), GalleryInformationActivity.class);
+                        intent.putExtra("CODE", randomCodeList.get(i));
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        finish();
+                        break;
+                    }
+                }
+                return true;
+            }
+        };
+
+        View.OnClickListener onClickListener = new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                for(int i = 0; i < imageViews.length; i++){
+                    if(v.getId() == imageViews[i].getId()){
+                        nowCode = randomCodeList.get(i);
+
                         Glide.with(getApplicationContext()).load("http://141.164.40.63:8000/media/database/" + randomCodeList.get(i) + "/" + randomNumberList.get(i) + ".jpg").into(popUpView);
                         FLAG = 1;
                         int finalI = i;
@@ -200,9 +231,9 @@ public class PopularActivity extends BaseActivity implements SwipeRefreshLayout.
                         break;
                     }
                 }
-                return true;
             }
         };
+
 
         imageViews[0] = findViewById(R.id.Main_ImageView_1);
         imageViews[1] = findViewById(R.id.Main_ImageView_2);
@@ -232,6 +263,7 @@ public class PopularActivity extends BaseActivity implements SwipeRefreshLayout.
             imageView.setBackground(drawable);
             imageView.setClipToOutline(true);
             imageView.setOnLongClickListener(onLongClickListener);
+            imageView.setOnClickListener(onClickListener);
         }
 
         popUpView.setBackground(drawable);
@@ -264,6 +296,14 @@ public class PopularActivity extends BaseActivity implements SwipeRefreshLayout.
                 initHandler.sendMessage(msg);
             }
         }.start();
+    }
+
+    public void onBigImageClicked(View view){
+        Intent intent = new Intent(getApplicationContext(), GalleryInformationActivity.class);
+        intent.putExtra("CODE", nowCode);
+        startActivity(intent);
+        overridePendingTransition(0, 0);
+        finish();
     }
 
     @Override
@@ -307,6 +347,18 @@ public class PopularActivity extends BaseActivity implements SwipeRefreshLayout.
     };
 
     @SuppressLint("HandlerLeak")
+    Handler noLikeOpenHandler = new Handler() {
+        @Override
+        @SuppressLint({"HandlerLeak", "SetTextI18n"})
+        public void handleMessage(Message msg) {
+            Intent intent = new Intent(getApplicationContext(), NoLikeActivity.class);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+            finish();
+        }
+    };
+
+    @SuppressLint("HandlerLeak")
     Handler setInfoPopUpHandler = new Handler() {
         @Override
         @SuppressLint({"HandlerLeak", "SetTextI18n"})
@@ -317,11 +369,9 @@ public class PopularActivity extends BaseActivity implements SwipeRefreshLayout.
             popUpView.setVisibility(View.VISIBLE);
             backBlurView.setVisibility(View.VISIBLE);
             popUpInfoView.setVisibility(View.VISIBLE);
-            popUpInnerView.setVisibility(View.VISIBLE);
 
             popUpView.startAnimation(popUpAnimation);
             popUpInfoView.startAnimation(popUpAnimation);
-            popUpInnerView.startAnimation(popUpAnimation);
         }
     };
 
@@ -334,7 +384,6 @@ public class PopularActivity extends BaseActivity implements SwipeRefreshLayout.
         popUpView.setVisibility(View.INVISIBLE);
         backBlurView.setVisibility(View.INVISIBLE);
         popUpInfoView.setVisibility(View.INVISIBLE);
-        popUpInnerView.setVisibility(View.INVISIBLE);
         popUpTitleTextView.setText("");
         popUpCreatorTextView.setText("");
         FLAG = 0;
@@ -349,7 +398,6 @@ public class PopularActivity extends BaseActivity implements SwipeRefreshLayout.
             popUpView.setVisibility(View.INVISIBLE);
             backBlurView.setVisibility(View.INVISIBLE);
             popUpInfoView.setVisibility(View.INVISIBLE);
-            popUpInnerView.setVisibility(View.INVISIBLE);
             popUpTitleTextView.setText("");
             popUpCreatorTextView.setText("");
             FLAG = 0;
