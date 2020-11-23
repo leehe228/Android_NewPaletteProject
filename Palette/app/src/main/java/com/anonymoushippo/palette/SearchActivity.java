@@ -82,12 +82,15 @@ public class SearchActivity extends BaseActivity {
         resultAdapter = new SearchAdapter(this, adapterInfoList);
         listView.setAdapter(resultAdapter);
 
-        listView.setOnItemClickListener((adapterView, view, i, l) -> {
-            Intent intent = new Intent(getApplicationContext(), GalleryInformationActivity.class);
-            intent.putExtra("CODE", adapterCodeList.get(i));
-            startActivity(intent);
-            overridePendingTransition(0, 0);
-            finish();
+        listView.setOnItemClickListener(new ListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getApplicationContext(), GalleryInformationActivity.class);
+                intent.putExtra("CODE", adapterCodeList.get(i));
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+                finish();
+            }
         });
 
         // STT

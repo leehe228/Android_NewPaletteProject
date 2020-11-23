@@ -1,78 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:padding="10dp">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:padding="10dp">
 
-    <com.anonymoushippo.palette.SquareImageView
-        android:id="@+id/SearchList_ImageView"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:background="#EFEFEF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <com.anonymoushippo.palette.SquareImage
+            android:id="@+id/SearchList_ImageView"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="#EFEFEF"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="15dp"
-        android:orientation="vertical"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        app:layout_constraintBottom_toBottomOf="@id/SearchList_ImageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/SearchList_ImageView"
-        app:layout_constraintTop_toTopOf="@id/SearchList_ImageView">
-
-        <TextView
-            android:id="@+id/SearchList_TextView_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/nanumeb"
-            android:maxLines="1"
-            android:lines="1"
-            android:textColor="#000000"
-            android:textSize="20dp" />
-
-        <TextView
-            android:id="@+id/SearchList_TextView_creator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:fontFamily="@font/nanumr"
-            android:maxLines="1"
-            android:lines="1"
-            android:textColor="#000000"
-            android:textSize="12dp" />
-
-        <Space
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_marginStart="15dp"
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/SearchList_ImageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/SearchList_ImageView"
+            app:layout_constraintTop_toTopOf="@id/SearchList_ImageView">
 
         <TextView
-            android:id="@+id/SearchList_TextView_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:lines="1"
-            android:textSize="12dp"
-            android:textColor="#000000"
-            android:fontFamily="@font/nanumr"/>
+                android:id="@+id/SearchList_TextView_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nanumeb"
+                android:maxLines="1"
+                android:lines="1"
+                android:textColor="#000000"
+                android:textSize="20dp" />
 
         <TextView
-            android:id="@+id/SearchList_TextView_category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:lines="1"
-            android:layout_marginTop="6dp"
-            android:textSize="12dp"
-            android:textColor="#000000"
-            android:fontFamily="@font/nanumr"/>
+                android:id="@+id/SearchList_TextView_creator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:fontFamily="@font/nanumr"
+                android:maxLines="1"
+                android:lines="1"
+                android:textColor="#000000"
+                android:textSize="12dp" />
+
+        <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+        <TextView
+                android:id="@+id/SearchList_TextView_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:lines="1"
+                android:textSize="12dp"
+                android:textColor="#000000"
+                android:fontFamily="@font/nanumr" />
+
+        <TextView
+                android:id="@+id/SearchList_TextView_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:lines="1"
+                android:layout_marginTop="6dp"
+                android:textSize="12dp"
+                android:textColor="#000000"
+                android:fontFamily="@font/nanumr" />
 
     </LinearLayout>
 

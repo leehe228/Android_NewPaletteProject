@@ -123,6 +123,8 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
 
     private ImageButton plusButton;
 
+    private ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,6 +174,9 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
         contentTextView = findViewById(R.id.Gallery_TextView_content);
 
         Button auctionButton = findViewById(R.id.Gallery_Button_Auction);
+
+        progressBar = findViewById(R.id.Gallery_Progressbar);
+        progressBar.setMax(100);
 
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(null, 0);
@@ -604,7 +609,6 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
         }
     }
 
-    // 사진 변경 핸들러
     @SuppressLint("HandlerLeak")
     android.os.Handler initLikeHandler = new Handler() {
         @Override
@@ -627,9 +631,11 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
             PLAY_FLAG = false;
             tts.stop();
 
-            if(AUTO_FLAG){
+            if(AUTO_FLAG) {
                 Speech();
             }
+
+            progressBar.setProgress((int)(((double)INDEX / (double)MAX_INDEX) * 100));
         }
     };
 

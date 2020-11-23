@@ -166,4 +166,15 @@
 
     </LinearLayout>
 
+    <ProgressBar
+            android:id="@+id/Gallery_Progressbar"
+            android:progressDrawable="@drawable/progress"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:max="100"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
