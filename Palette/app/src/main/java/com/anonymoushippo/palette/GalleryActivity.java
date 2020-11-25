@@ -26,6 +26,7 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import com.github.mmin18.widget.RealtimeBlurView;
 import org.jetbrains.annotations.NotNull;
 
@@ -128,6 +129,10 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
     private String CREATOR;
     private String CATEGORY;
 
+    private String auctionString;
+
+    private Button auctionButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,7 +181,7 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
         titleTextView = findViewById(R.id.Gallery_TextView_title);
         contentTextView = findViewById(R.id.Gallery_TextView_content);
 
-        Button auctionButton = findViewById(R.id.Gallery_Button_Auction);
+        auctionButton = findViewById(R.id.Gallery_Button_Auction);
 
         progressBar = findViewById(R.id.Gallery_Progressbar);
         progressBar.setMax(100);
@@ -213,6 +218,8 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
         String tempValue = intent.getStringExtra("NUMBER");
         CREATOR = intent.getStringExtra("CREATOR");
         CATEGORY = intent.getStringExtra("CATEGORY");
+        Log.e("RESULT", CATEGORY);
+
         if(tempValue == null){
             MAX_INDEX = 0;
         }
@@ -310,11 +317,10 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
         });
 
         // 조회수 올리기
-        final String finalCODE = CODE;
         new Thread() {
             public void run() {
                 String[] k = {"code"};
-                String[] v = {finalCODE};
+                String[] v = {CODE};
                 String result = HttpPostData.POST("gallery/addView/", k, v);
                 Log.i("addView", result);
             }
@@ -323,9 +329,10 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
         // 데이터 받아오기
         new Thread() {
             public void run() {
+                auctionString = HttpPostData.POST("gallery/auctionStates/", new String[]{"code"}, new String[]{CODE});
                 try {
                     for(int i = 1; i <= MAX_INDEX; i++) {
-                        java.net.URL url = new java.net.URL("http://141.164.40.63:8000/media/database/" + finalCODE + "/" + i + ".jpg");
+                        java.net.URL url = new java.net.URL("http://141.164.40.63:8000/media/database/" + CODE + "/" + i + ".jpg");
                         Log.i("i", String.valueOf(i));
                         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                         connection.setDoInput(true);
@@ -496,6 +503,7 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
                             }
                             data[1] = stringBuilder.toString();
                             HttpPostData.POST("account/setLike/", keys, data);
+                            HttpPostData.POST("gallery/cancelLike/", new String[]{"code"}, new String[]{CODE});
                         }
                     }.start();
 
@@ -518,6 +526,7 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
                             }
                             data[1] = stringBuilder.toString();
                             HttpPostData.POST("account/setLike/", keys, data);
+                            HttpPostData.POST("gallery/addLike/", new String[]{"code"}, new String[]{CODE});
                         }
                     }.start();
                 }
@@ -540,6 +549,8 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
 
         auctionButton.setOnClickListener(v -> {
             Intent aIntent = new Intent(getApplicationContext(), AuctionActivity.class);
+            aIntent.putExtra("CODE", CODE);
+            aIntent.putExtra("NUMBER", String.valueOf(INDEX + 1));
             startActivity(aIntent);
             overridePendingTransition(0, 0);
         });
@@ -619,6 +630,15 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
     }
 
     @SuppressLint("HandlerLeak")
+    android.os.Handler auctionSetHandler = new Handler() {
+        @Override
+        @SuppressLint({"HandlerLeak", "SetTextI18n"})
+        public void handleMessage(Message msg) {
+
+        }
+    };
+
+    @SuppressLint("HandlerLeak")
     android.os.Handler initLikeHandler = new Handler() {
         @Override
         @SuppressLint({"HandlerLeak", "SetTextI18n"})
@@ -637,6 +657,17 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
             titleTextView.setText(TITLES[INDEX]);
             contentTextView.setText(CONTENTS[INDEX]);
             infoButton.setImageResource(R.drawable.start);
+
+            char[] auctionStringList = auctionString.toCharArray();
+            if(auctionStringList[INDEX] == '1'){
+                auctionButton.setEnabled(true);
+                auctionButton.setVisibility(View.VISIBLE);
+            }
+            else{
+                auctionButton.setEnabled(false);
+                auctionButton.setVisibility(View.INVISIBLE);
+            }
+
             PLAY_FLAG = false;
             tts.stop();
 

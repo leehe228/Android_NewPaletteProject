@@ -137,11 +137,11 @@ public class LoginActivity extends BaseActivity {
 
                 if(insert1 && insert2){
                     okButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.basic_button));
-                    okButton.setClickable(true);
+                    okButton.setEnabled(true);
                 }
                 else{
                     okButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.basic_button_unclick));
-                    okButton.setClickable(false);
+                    okButton.setEnabled(false);
                 }
             }
 

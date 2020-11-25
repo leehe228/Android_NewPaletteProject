@@ -7,6 +7,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -122,7 +123,9 @@ public class GalleryEndActivity extends BaseActivity {
 
                 String[] resultList = result.split("-");
 
-                codeList.addAll(Arrays.asList(resultList).subList(0, imageViews.length));
+                Log.e("RESULT", result);
+
+                codeList.addAll(Arrays.asList(resultList).subList(0, resultList.length));
 
                 Message msg = initHandler.obtainMessage();
                 initHandler.sendMessage(msg);

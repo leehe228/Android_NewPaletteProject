@@ -14,37 +14,37 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".NoLikeActivity">
-        </activity>
-        <activity android:name=".AuctionActivity">
-        </activity>
-        <activity android:name=".GalleryEndActivity">
-        </activity>
-        <activity android:name=".GalleryActivity">
-        </activity>
-        <activity android:name=".GalleryInformationActivity">
-        </activity>
-        <activity android:name=".GetInterestActivity">
-        </activity>
-        <activity android:name=".PrivatePrivacyActivity">
-        </activity>
-        <activity android:name=".SignUpActivity">
-        </activity>
-        <activity android:name=".FindPasswordActivity">
-        </activity>
-        <activity android:name=".LoginActivity">
-        </activity>
-        <activity android:name=".PermissionActivity">
-        </activity>
-        <activity android:name=".NoInternetActivity">
-        </activity>
-        <activity android:name=".WelcomeActivity">
-        </activity>
-        <activity android:name=".PortfolioActivity">
-        </activity>
-        <activity android:name=".LikeActivity">
-        </activity>
-        <activity android:name=".PopularActivity" />
+        <activity android:name=".NoLikeActivity"
+                android:screenOrientation="portrait" />
+        <activity android:name=".AuctionActivity"
+                android:screenOrientation="portrait" />
+        <activity android:name=".GalleryEndActivity"
+                android:screenOrientation="portrait" />
+        <activity android:name=".GalleryActivity" />
+        <activity android:name=".GalleryInformationActivity"
+                android:screenOrientation="portrait" />
+        <activity android:name=".GetInterestActivity"
+                android:screenOrientation="portrait" />
+        <activity android:name=".PrivatePrivacyActivity"
+                android:screenOrientation="portrait" />
+        <activity android:name=".SignUpActivity"
+                android:screenOrientation="portrait" />
+        <activity android:name=".FindPasswordActivity"
+                android:screenOrientation="portrait" />
+        <activity android:name=".LoginActivity"
+                android:screenOrientation="portrait" />
+        <activity android:name=".PermissionActivity"
+                android:screenOrientation="portrait" />
+        <activity android:name=".NoInternetActivity"
+                android:screenOrientation="portrait" />
+        <activity android:name=".WelcomeActivity"
+                android:screenOrientation="portrait" />
+        <activity android:name=".PortfolioActivity"
+                android:screenOrientation="portrait" />
+        <activity android:name=".LikeActivity"
+                android:screenOrientation="portrait" />
+        <activity android:name=".PopularActivity"
+                android:screenOrientation="portrait" />
         <activity
                 android:name=".SearchActivity"
                 android:screenOrientation="portrait" />

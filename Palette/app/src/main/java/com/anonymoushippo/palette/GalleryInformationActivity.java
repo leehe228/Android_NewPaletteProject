@@ -98,7 +98,7 @@ public class GalleryInformationActivity extends BaseActivity {
             public void run() {
                 result = HttpPostData.POST("gallery/getExhibition/", keys, data);
 
-                Log.i("RESULT", result);
+                Log.e("GalleryInformation : RESULT", result);
 
                 if (result.equals("") || result.equals("-1") || result.equals("SEND_FAIL")) {
 
@@ -121,6 +121,8 @@ public class GalleryInformationActivity extends BaseActivity {
                     artContents = resultList[5].trim();
                     date = resultList[6].trim();
                     category = resultList[7].trim();
+
+
 
                 }
 
