@@ -38,6 +38,22 @@
             app:layout_constraintTop_toBottomOf="@id/Welcome_TextView_title" />
 
     <Button
+            android:id="@+id/Welcome_Button_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/basic_button_darkgray"
+            android:fontFamily="@font/nanumr"
+            android:stateListAnimator="@null"
+            android:text="테스트 유저로 로그인"
+            android:textColor="#FFFFFF"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toTopOf="@id/Welcome_Button_signup"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="SpUsage" />
+
+    <Button
             android:id="@+id/Welcome_Button_signup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

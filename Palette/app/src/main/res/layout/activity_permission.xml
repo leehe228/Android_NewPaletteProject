@@ -36,13 +36,17 @@
             app:layout_constraintTop_toBottomOf="@id/Permission_TextView_title" />
 
     <LinearLayout
+            android:id="@+id/Permission_LinearLayout_temp1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
             android:background="#EDEDED"
             android:gravity="center"
+            android:paddingTop="20dp"
+            android:paddingBottom="0dp"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
             android:orientation="horizontal"
-            android:padding="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/Permission_TextView_text1">
@@ -57,7 +61,40 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/nanumr"
+                android:layout_weight="1"
                 android:text="음성 검색을 위한 마이크 권한"
+                android:textColor="#393939"
+                android:textSize="14dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/Permission_LinearLayout_temp2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#EDEDED"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="20dp"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/Permission_LinearLayout_temp1">
+
+        <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                app:srcCompat="@drawable/camera_icon" />
+
+        <TextView
+                android:layout_marginStart="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nanumr"
+                android:text="AR을 위한 카메라 권한"
+                android:layout_weight="1"
                 android:textColor="#393939"
                 android:textSize="14dp" />
 

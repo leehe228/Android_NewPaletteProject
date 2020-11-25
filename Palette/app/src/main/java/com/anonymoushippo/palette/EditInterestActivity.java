@@ -1,12 +1,17 @@
 package com.anonymoushippo.palette;
 
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageButton;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.igalata.bubblepicker.BubblePickerListener;
@@ -14,14 +19,16 @@ import com.igalata.bubblepicker.adapter.BubblePickerAdapter;
 import com.igalata.bubblepicker.model.BubbleGradient;
 import com.igalata.bubblepicker.model.PickerItem;
 import com.igalata.bubblepicker.rendering.BubblePicker;
+import org.intellij.lang.annotations.JdkConstants;
 import org.jetbrains.annotations.NotNull;
 
-public class GetInterestActivity extends BaseActivity {
+public class EditInterestActivity extends BaseActivity {
 
     // 데이터 전송용 배열
     private final String[] keys = new String[2];
     private final String[] data = new String[2];
     String result;
+    private String userEmail;
 
     // Bubble Picker
     BubblePicker bubblePicker;
@@ -40,13 +47,15 @@ public class GetInterestActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_get_interest);
+        setContentView(R.layout.activity_edit_interest);
 
         // 인스턴스화
-        Button okButton = findViewById(R.id.GetInterest_Button_done);
-        bubblePicker = findViewById(R.id.GetInterest_BubblePicker_main);
-        // TextView
-        TextView textView = findViewById(R.id.GetInterest_TextView_text);
+        Button okButton = findViewById(R.id.EditInterest_Button_done);
+        bubblePicker = findViewById(R.id.EditInterest_BubblePicker_main);
+
+        // 초기화
+        SharedPreferences preferences = getSharedPreferences("com.AnonymousHippo.Palette.sharePreference", MODE_PRIVATE);
+        userEmail = preferences.getString("userEmail", "");
 
         // Bubble Picker Adapter
         bubblePicker.setAdapter(new BubblePickerAdapter() {
@@ -102,9 +111,6 @@ public class GetInterestActivity extends BaseActivity {
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences preferences = getSharedPreferences("com.AnonymousHippo.Palette.sharePreference", MODE_PRIVATE);
-                String userEmail = preferences.getString("userEmail", "");
-
                 keys[0] = "email";
                 keys[1] = "interest";
                 data[0] = userEmail;
@@ -118,11 +124,8 @@ public class GetInterestActivity extends BaseActivity {
 
                         switch (result) {
                             case "1": {
-                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                intent.putExtra("open", "NONE");
-                                startActivity(intent);
-                                overridePendingTransition(0, 0);
-                                finish();
+                                Message msg = dialogHandler.obtainMessage();
+                                dialogHandler.sendMessage(msg);
                                 break;
                             }
 
@@ -153,6 +156,24 @@ public class GetInterestActivity extends BaseActivity {
     // 뒤로가기 버튼
     @Override
     public void onBackPressed() {
-        //
+        finish();
     }
+
+    @SuppressLint("HandlerLeak")
+    Handler dialogHandler = new Handler() {
+        @Override
+        @SuppressLint({"HandlerLeak", "SetTextI18n"})
+        public void handleMessage(Message msg) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(EditInterestActivity.this);
+            builder.setTitle("저장했습니다");
+            builder.setPositiveButton("확인", new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    finish();
+                }
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
+    };
 }

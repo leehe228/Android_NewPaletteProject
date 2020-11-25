@@ -47,7 +47,6 @@
                 android:layout_height="0dp"
                 android:textSize="12dp"
                 android:fontFamily="@font/nanumr"
-                android:text="Konkuk Univ. ArtDesign."
                 android:textColor="@color/white" />
 
         <TextView
@@ -56,7 +55,6 @@
                 android:layout_height="0dp"
                 android:textSize="12dp"
                 android:fontFamily="@font/nanumr"
-                android:text="한국의 멋과 아름다운 풍경을 세계에 알립니다. 주로 사진전을 엽니다."
                 android:textColor="@color/white" />
 
         <TextView
@@ -65,7 +63,6 @@
                 android:layout_height="0dp"
                 android:textSize="12dp"
                 android:fontFamily="@font/nanumr"
-                android:text="test@test.com"
                 android:textColor="@color/white" />
 
     </LinearLayout>
@@ -84,7 +81,7 @@
                 android:id="@+id/GalleryEnd_text3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="이 전시회는 마음에 드셨나요?"
+                android:text="이 전시회를 추천하시겠습니까?"
                 android:textColor="@color/white"
                 android:textSize="20dp"
                 android:fontFamily="@font/nanumeb" />

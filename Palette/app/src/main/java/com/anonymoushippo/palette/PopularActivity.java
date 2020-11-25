@@ -1,5 +1,6 @@
 package com.anonymoushippo.palette;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import androidx.appcompat.app.AppCompatActivity;
@@ -132,8 +133,9 @@ public class PopularActivity extends BaseActivity implements SwipeRefreshLayout.
             public void onClick(View v) {
                 backView.setVisibility(View.VISIBLE);
                 loadingView.setVisibility(View.VISIBLE);
+                SharedPreferences preferences = getSharedPreferences("com.AnonymousHippo.Palette.sharePreference", MODE_PRIVATE);
                 keys[0] = "email";
-                data[0] = "test@test.com";
+                data[0] = preferences.getString("userEmail", "test@test.com");
 
                 new Thread() {
                     public void run() {

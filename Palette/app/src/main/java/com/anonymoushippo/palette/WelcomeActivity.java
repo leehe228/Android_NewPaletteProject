@@ -16,12 +16,26 @@ public class WelcomeActivity extends BaseActivity {
         // 인스턴스화
         Button loginButton = findViewById(R.id.Welcome_Button_login);
         Button signUpButton = findViewById(R.id.Welcome_Button_signup);
+        Button testButton = findViewById(R.id.Welcome_Button_test);
+
+        // 로그인 버튼
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent signUpIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                signUpIntent.putExtra("open", "TEST");
+                startActivity(signUpIntent);
+                overridePendingTransition(0, 0);
+                finish();
+            }
+        });
 
         // 로그인 버튼
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent signUpIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                signUpIntent.putExtra("open", "NONE");
                 startActivity(signUpIntent);
                 overridePendingTransition(0, 0);
                 finish();

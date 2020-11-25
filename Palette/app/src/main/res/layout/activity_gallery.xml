@@ -48,42 +48,54 @@
                 android:id="@+id/Gallery_TextView_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="140dp"
+                android:layout_marginTop="100dp"
                 android:text="제목"
                 android:fontFamily="@font/nanumb"
                 android:textColor="#FFFFFF"
                 android:textSize="24dp" />
 
-        <TextView
-                android:id="@+id/Gallery_TextView_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:fontFamily="@font/nanumr"
-                android:lineSpacingExtra="10dp"
-                android:textColor="#FFFFFF"
-                android:text="본문 테스트"
-                android:textSize="16dp" />
+        <ScrollView android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginTop="40dp">
+
+            <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                        android:id="@+id/Gallery_TextView_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanumr"
+                        android:lineSpacingExtra="10dp"
+                        android:textColor="#FFFFFF"
+                        android:text="본문 테스트"
+                        android:textSize="16dp" />
+
+            </LinearLayout>
+
+        </ScrollView>
 
         <Space android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
         <Button
+                android:visibility="invisible"
                 android:id="@+id/Gallery_Button_Auction"
                 android:layout_width="100dp"
                 android:layout_height="40dp"
                 android:text="경매 진행 중"
                 android:textSize="16dp"
                 android:textColor="#4CAF50"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="60dp"
                 android:background="@drawable/on_auction" />
 
     </LinearLayout>
 
     <LinearLayout
             android:id="@+id/Gallery_RemoteController"
-            android:layout_width="210dp"
+            android:layout_width="260dp"
             android:layout_height="40dp"
             android:layout_marginBottom="30dp"
             android:background="@drawable/background_remote_control"
@@ -91,7 +103,7 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent">
 
         <ImageButton
@@ -116,6 +128,13 @@
                 android:layout_height="40dp"
                 android:background="#00000000"
                 app:srcCompat="@drawable/start" />
+
+        <ImageButton
+                android:id="@+id/Gallery_ImageButton_ar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="#00000000"
+                app:srcCompat="@drawable/ar_icon" />
 
         <ImageButton
                 android:id="@+id/Gallery_ImageButton_close"

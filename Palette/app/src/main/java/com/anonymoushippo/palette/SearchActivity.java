@@ -1,5 +1,6 @@
 package com.anonymoushippo.palette;
 
+import android.content.SharedPreferences;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -54,6 +55,9 @@ public class SearchActivity extends BaseActivity {
 
     ListView listView;
 
+    ImageButton ttsOrKillButton;
+    boolean ttsOrKillFlag;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +69,9 @@ public class SearchActivity extends BaseActivity {
         ImageButton likeButton = findViewById(R.id.LikeButton);
         ImageButton portfolioButton = findViewById(R.id.PortfolioButton);
 
+        ttsOrKillButton = findViewById(R.id.Search_TTS);
+        ttsOrKillFlag = false;
+
         searchEditText = findViewById(R.id.Search_EditText_search);
 
         adapterInfoList = new ArrayList<>();
@@ -73,8 +80,6 @@ public class SearchActivity extends BaseActivity {
         codeList = new ArrayList<>();
 
         listView = findViewById(R.id.SearchList_ListView);
-
-        ImageButton micButton = findViewById(R.id.Search_TTS);
 
         warningTextView = findViewById(R.id.Search_TextView_warning);
 
@@ -112,23 +117,35 @@ public class SearchActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(searchEditText.getText().toString().length() == 0){
+                if (searchEditText.getText().toString().length() == 0) {
                     warningTextView.setText("음성으로 검색하거나 검색어를 입력해주세요");
+
                     warningTextView.setVisibility(View.VISIBLE);
-                } else{
+                } else {
                     warningTextView.setText("검색 결과가 없습니다");
                 }
 
                 adapterCodeList.clear();
                 adapterInfoList.clear();
-                if (searchEditText.getText().length() > 0){
+                if (searchEditText.getText().length() > 0) {
                     Search();
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                ttsOrKillFlag = searchEditText.getText().toString().length() != 0;
 
+                if(ttsOrKillFlag){
+                    ttsOrKillButton.setImageResource(R.drawable.kill);
+                }
+                else{
+                    ttsOrKillButton.setImageResource(R.drawable.mic);
+
+                    adapterCodeList.clear();
+                    adapterInfoList.clear();
+                    resultAdapter.notifyDataSetChanged();
+                }
             }
         });
 
@@ -143,12 +160,18 @@ public class SearchActivity extends BaseActivity {
             }
         }.start();
 
-        micButton.setOnClickListener(new View.OnClickListener() {
+        ttsOrKillButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRecognizer = SpeechRecognizer.createSpeechRecognizer(getApplicationContext());
-                mRecognizer.setRecognitionListener(listener);
-                mRecognizer.startListening(sttIntent);
+                if (ttsOrKillFlag) {
+                    searchEditText.setText("");
+                } else {
+                    mRecognizer = SpeechRecognizer.createSpeechRecognizer(getApplicationContext());
+                    mRecognizer.setRecognitionListener(listener);
+                    mRecognizer.startListening(sttIntent);
+
+                    loadingView.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -185,10 +208,11 @@ public class SearchActivity extends BaseActivity {
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences preferences = getSharedPreferences("com.AnonymousHippo.Palette.sharePreference", MODE_PRIVATE);
                 backView.setVisibility(View.VISIBLE);
                 loadingView.setVisibility(View.VISIBLE);
                 keys[0] = "email";
-                data[0] = "test@test.com";
+                data[0] = preferences.getString("userEmail", "test@test.com");
 
                 new Thread() {
                     public void run() {
@@ -197,11 +221,11 @@ public class SearchActivity extends BaseActivity {
                         if (resultString.equals("-1") || resultString.equals("SEND_FAIL")) {
                             //
                         } else {
-                            if (resultString.equals("")){
+                            if (resultString.equals("")) {
                                 UserLike.setImages(null);
                                 Message msg = noLikeOpenHandler.obtainMessage();
                                 noLikeOpenHandler.sendMessage(msg);
-                            } else{
+                            } else {
                                 String[] resultList = resultString.split("-");
 
                                 ArrayList<Bitmap> tempList = new ArrayList<>();
@@ -222,8 +246,7 @@ public class SearchActivity extends BaseActivity {
                                     UserLike.setCodes(tempCodeList);
                                     Message msg = likeOpenHandler.obtainMessage();
                                     likeOpenHandler.sendMessage(msg);
-                                }
-                                catch (IOException e) {
+                                } catch (IOException e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -279,6 +302,8 @@ public class SearchActivity extends BaseActivity {
                 case SpeechRecognizer.ERROR_SERVER:
                 case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
                 default:
+                    searchEditText.setText("");
+                    loadingView.setVisibility(View.INVISIBLE);
                     System.err.println(error);
                     break;
             }
@@ -288,22 +313,22 @@ public class SearchActivity extends BaseActivity {
         public void onResults(Bundle results) {
             // 말을 하면 ArrayList에 단어를 넣고 textView에 단어를 이어줍니다.
             ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            loadingView.setVisibility(View.INVISIBLE);
 
             String resultKeyword = "";
             for (String match : matches) {
                 resultKeyword = resultKeyword.concat(match);
             }
 
-            if(resultKeyword.equals("")){
+            if (resultKeyword.equals("")) {
                 searchEditText.setText("");
-            }
-            else{
+            } else {
                 searchEditText.setText(resultKeyword);
             }
 
             adapterCodeList.clear();
             adapterInfoList.clear();
-            if (searchEditText.getText().length() > 0){
+            if (searchEditText.getText().length() > 0) {
                 Search();
             }
 
@@ -381,7 +406,7 @@ public class SearchActivity extends BaseActivity {
 
     }
 
-    public int CheckSame(String str1, String str2){
+    public int CheckSame(String str1, String str2) {
         int c = 0;
 
         char[] str1Array = str1.replace(" ", "").toCharArray();
@@ -411,7 +436,7 @@ public class SearchActivity extends BaseActivity {
     };
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         finish();
     }
 

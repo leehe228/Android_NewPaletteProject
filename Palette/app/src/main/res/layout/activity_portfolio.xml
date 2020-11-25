@@ -125,7 +125,6 @@
                 android:layout_height="wrap_content"
                 android:textSize="20dp"
                 android:fontFamily="@font/nanumeb"
-                android:text="TEST_USER"
                 android:textColor="#000000" />
 
         <TextView
@@ -134,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="12dp"
                 android:fontFamily="@font/nanumr"
-                android:text="Konkuk Univ. ArtDesign."
+                android:text="저장된 학력이 없습니다."
                 android:layout_marginTop="5dp"
                 android:textColor="#000000" />
 
@@ -145,7 +144,7 @@
                 android:textSize="12dp"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/nanumr"
-                android:text="한국의 멋과 아름다운 풍경을 세계에 알립니다. 주로 사진전을 엽니다."
+                android:text="한 줄 정보가 없습니다."
                 android:textColor="#000000" />
 
         <TextView
@@ -155,7 +154,6 @@
                 android:textSize="12dp"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/nanumr"
-                android:text="test@test.com"
                 android:textColor="#000000" />
 
     </LinearLayout>
@@ -177,10 +175,14 @@
     <com.github.mmin18.widget.RealtimeBlurView
             android:id="@+id/Main_blurView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:focusable="true"
             android:onClick="onBlurClicked"
             android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/Main_blurView_TOP"
+            app:layout_constraintBottom_toTopOf="@id/Main_blurView_Bottom"
             app:realtimeBlurRadius="20dp"
             app:realtimeOverlayColor="#90FFFFFF" />
 
@@ -202,6 +204,7 @@
                 android:background="@drawable/round_button_white"
                 android:elevation="6dp"
                 android:padding="20dp"
+                app:srcCompat="@drawable/fab_folio"
                 android:scaleType="center"
                 android:visibility="invisible" />
 
@@ -225,6 +228,7 @@
                 android:layout_height="70dp"
                 android:adjustViewBounds="true"
                 android:background="@drawable/round_button_white"
+                app:srcCompat="@drawable/fab_setting"
                 android:elevation="6dp"
                 android:padding="20dp"
                 android:scaleType="center"
@@ -245,7 +249,7 @@
                 tools:ignore="SpUsage" />
 
         <ImageButton
-                android:visibility="invisible"
+                android:visibility="visible"
                 android:id="@+id/Main_FAB_main"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
@@ -254,7 +258,7 @@
                 android:background="@drawable/round_button_white"
                 android:elevation="6dp"
                 app:srcCompat="@drawable/fab_main"
-                android:padding="20dp"
+                android:padding="24dp"
                 android:scaleType="centerCrop"
                 android:stateListAnimator="@null" />
 

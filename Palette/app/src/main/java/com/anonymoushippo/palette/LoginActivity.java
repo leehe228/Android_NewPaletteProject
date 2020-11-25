@@ -54,10 +54,20 @@ public class LoginActivity extends BaseActivity {
         // 초기화
         insert1 = insert2 = false;
 
+        Intent intent = getIntent();
+        if (intent.getStringExtra("open").equals("TEST")) {
+            emailEditText.setText("test@test.com");
+            passwordEditText.setText("00000000");
+
+            okButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.basic_button));
+            okButton.setEnabled(true);
+            insert1 = insert2 = true;
+        }
+
         // 로그인 버튼
-        okButton.setOnClickListener(new View.OnClickListener(){
+        okButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 final String email = emailEditText.getText().toString();
 
                 // 암호화 인코딩
@@ -70,8 +80,10 @@ public class LoginActivity extends BaseActivity {
                     password = passwordEditText.getText().toString();
                 }
 
-                keys[0] = "email"; keys[1] = "password";
-                data[0] = email; data[1] = password;
+                keys[0] = "email";
+                keys[1] = "password";
+                data[0] = email;
+                data[1] = password;
 
                 new Thread() {
                     public void run() {
@@ -80,7 +92,7 @@ public class LoginActivity extends BaseActivity {
                         Log.i("result : ", result);
 
                         switch (result) {
-                            case "1":{
+                            case "1": {
                                 SharedPreferences preferences = getSharedPreferences("com.AnonymousHippo.Palette.sharePreference", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = preferences.edit();
                                 editor.putString("userEmail", email);
@@ -128,18 +140,16 @@ public class LoginActivity extends BaseActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 insert1 = android.util.Patterns.EMAIL_ADDRESS.matcher(emailEditText.getText().toString()).matches();
 
-                if(insert1){
+                if (insert1) {
                     emailAlertTextView.setVisibility(View.INVISIBLE);
-                }
-                else{
+                } else {
                     emailAlertTextView.setVisibility(View.VISIBLE);
                 }
 
-                if(insert1 && insert2){
+                if (insert1 && insert2) {
                     okButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.basic_button));
                     okButton.setEnabled(true);
-                }
-                else{
+                } else {
                     okButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.basic_button_unclick));
                     okButton.setEnabled(false);
                 }
@@ -162,13 +172,12 @@ public class LoginActivity extends BaseActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 insert2 = !passwordEditText.getText().toString().equals("");
 
-                if(insert1 && insert2){
+                if (insert1 && insert2) {
                     okButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.basic_button));
-                    okButton.setClickable(true);
-                }
-                else{
+                    okButton.setEnabled(true);
+                } else {
                     okButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.basic_button_unclick));
-                    okButton.setClickable(false);
+                    okButton.setEnabled(false);
                 }
             }
 

@@ -166,6 +166,7 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
         ImageButton leftButton = findViewById(R.id.Gallery_ImageButton_left);
         ImageButton rightButton = findViewById(R.id.Gallery_ImageButton_right);
         ImageButton closeButton = findViewById(R.id.Gallery_ImageButton_close);
+        ImageButton ARButton = findViewById(R.id.Gallery_ImageButton_ar);
         infoButton = findViewById(R.id.Gallery_ImageButton_info);
         plusButton = findViewById(R.id.Gallery_ImageButton_plus);
 
@@ -261,7 +262,7 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
         TTS_Pitch = preferences.getInt("TTS_Pitch", 5);
         TTS_Speed = preferences.getInt("TTS_Speed", 5);
 
-        userEmail = "test@test.com"; //preferences.getString("userEmail", "");
+        userEmail = preferences.getString("userEmail", "test@test.com");
 
         // 데이터 받아오기
         keys[0] = "email";
@@ -304,9 +305,19 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
                 tts.stop();
 
                 if(AUTO_FLAG){
-                    INDEX++;
-                    Message msg2 = mHandler.obtainMessage();
-                    mHandler.sendMessage(msg2);
+                    if(INDEX == MAX_INDEX - 1){
+                        Intent intent = new Intent(getApplicationContext(), GalleryEndActivity.class);
+                        intent.putExtra("CREATOR", CREATOR);
+                        intent.putExtra("CATEGORY", CATEGORY);
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        finish();
+                    } else{
+                        INDEX++;
+                        Message msg2 = mHandler.obtainMessage();
+                        mHandler.sendMessage(msg2);
+                    }
+
                 }
             }
 
@@ -478,6 +489,18 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
             }
         });
 
+        ARButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*Intent intent = new Intent(getApplicationContext(), ARActivity.class);
+                intent.putExtra("CODE", CODE);
+                intent.putExtra("INDEX", INDEX);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+                finish();*/
+            }
+        });
+
         // Plus Button
         plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -492,7 +515,6 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
                             keys[1] = "userLike";
 
                             StringBuilder stringBuilder = new StringBuilder();
-                            // resultList.add(CODE);
                             for(String string : resultList){
                                 if(!string.equals(CODE)){
                                     if(stringBuilder.length() > 0){
@@ -551,6 +573,8 @@ public class GalleryActivity extends BaseActivity implements GestureDetector.OnG
             Intent aIntent = new Intent(getApplicationContext(), AuctionActivity.class);
             aIntent.putExtra("CODE", CODE);
             aIntent.putExtra("NUMBER", String.valueOf(INDEX + 1));
+            aIntent.putExtra("TITLE", TITLES[INDEX]);
+            aIntent.putExtra("CONTENTS", CONTENTS[INDEX]);
             startActivity(aIntent);
             overridePendingTransition(0, 0);
         });

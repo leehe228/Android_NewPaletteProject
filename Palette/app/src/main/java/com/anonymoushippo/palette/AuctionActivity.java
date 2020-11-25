@@ -20,6 +20,9 @@ import androidx.core.content.ContextCompat;
 import com.bumptech.glide.Glide;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class AuctionActivity extends BaseActivity {
 
@@ -32,13 +35,17 @@ public class AuctionActivity extends BaseActivity {
 
     private String galleryCode, auctionCode, artNumber, threeArtNumber;
 
-    private String startPrice, highPrice, title, creator;
-    private TextView titleTextView, startPriceTextView, highPriceTextView;
+    private String startPrice, highPrice, title, content;
+    private TextView titleTextView, contentsTextView, startPriceTextView, highPriceTextView;
     private String enterPrice;
     private String lastBuyerEmail;
 
     private EditText priceEditText;
     private Button payButton;
+
+    SimpleDateFormat dateSet;
+
+    private String leftTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +56,11 @@ public class AuctionActivity extends BaseActivity {
         Intent intent = getIntent();
         galleryCode = intent.getStringExtra("CODE");
         artNumber = intent.getStringExtra("NUMBER");
+        title = intent.getStringExtra("TITLE");
+        content = intent.getStringExtra("CONTENTS");
+        leftTime = "";
+
+        dateSet = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
         switch (artNumber.length()) {
             case 1: {
@@ -67,6 +79,7 @@ public class AuctionActivity extends BaseActivity {
         auctionCode = galleryCode + threeArtNumber;
 
         init();
+        Timer();
 
         // 인스턴스화
         mainView = findViewById(R.id.Auction_ImageView);
@@ -74,7 +87,8 @@ public class AuctionActivity extends BaseActivity {
         priceEditText = findViewById(R.id.Auction_EditText_price);
         payButton = findViewById(R.id.Auction_Button_pay);
 
-        titleTextView = findViewById(R.id.Auction_title);
+        titleTextView = findViewById(R.id.Auction_TextView_title);
+        contentsTextView = findViewById(R.id.Auction_TextView_contents);
         startPriceTextView = findViewById(R.id.Auction_TextView_startPrice);
         highPriceTextView = findViewById(R.id.Auction_TextView_highPrice);
 
@@ -92,16 +106,15 @@ public class AuctionActivity extends BaseActivity {
                     int price = Integer.parseInt(priceEditText.getText().toString()) * 1000;
                     DecimalFormat myFormatter = new DecimalFormat("###,###");
                     payButton.setText(myFormatter.format(price) + "원 입찰");
-                }
 
-                if (Integer.parseInt(priceEditText.getText().toString()) * 1000 > Integer.parseInt(highPrice)) {
-                    payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.basic_button));
-                    payButton.setEnabled(true);
-                } else {
-                    payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.basic_button_unclick));
-                    payButton.setEnabled(false);
+                    if (Integer.parseInt(priceEditText.getText().toString()) * 1000 > Integer.parseInt(highPrice)) {
+                        payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.basic_button));
+                        payButton.setEnabled(true);
+                    } else {
+                        payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.basic_button_unclick));
+                        payButton.setEnabled(false);
+                    }
                 }
-
             }
 
             @Override
@@ -128,46 +141,103 @@ public class AuctionActivity extends BaseActivity {
             public void run() {
                 result = HttpPostData.POST("gallery/getAuction/", keys, data);
 
-                Log.e("RESULT", result);
+                if (result.equals("-1")
+                        || result.equals("SEND_FAIL")
+                        || result.equals("NO_DATA_RECEIVED")) {
+                    Message msg = failDialogHandler.obtainMessage();
+                    failDialogHandler.sendMessage(msg);
 
-                /* 이메일-시작가-최고가-시작일-종료일-구매자이메일*/
-                String[] resultString = result.split("&");
+                } else {
+                    Log.e("RESULT", result);
 
-                startPrice = resultString[1];
-                highPrice = resultString[2];
-                lastBuyerEmail = resultString[5];
+                    /* 이메일-시작가-최고가-시작일-종료일-구매자이메일*/
+                    String[] resultString = result.split("&");
 
-                Message msg = initHandler.obtainMessage();
-                initHandler.sendMessage(msg);
+                    startPrice = resultString[1];
+                    highPrice = resultString[2];
+                    lastBuyerEmail = resultString[5];
 
+                    Message msg = initHandler.obtainMessage();
+                    initHandler.sendMessage(msg);
+                }
+            }
+        }.start();
+    }
+
+    public void Timer() {
+        new Thread() {
+            public void run() {
+                while (true) {
+                    String date = dateSet.format(new Date());
+                    Date startDate = new Date();
+                    Date endDate = new Date();
+                    try {
+                        startDate = dateSet.parse(date);
+                        endDate = dateSet.parse("2020-12-31-23-59-59");
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    long diff = (endDate.getTime() - startDate.getTime()) / 1000;
+
+                    long DAY = diff / 86400;
+                    long HOUR = (diff % 86400) / 3600;
+                    long MIN = ((diff % 86400) % 3600) / 60;
+                    long SEC = ((diff % 86400) % 3600) % 60;
+
+                    leftTime = "남은 시간 : " + DAY + "일 " + HOUR + "시간 " + MIN + "분 " + SEC + "초";
+
+                    Message msg = timerHandler.obtainMessage();
+                    timerHandler.sendMessage(msg);
+
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }.start();
     }
 
     public void update() {
         SharedPreferences preferences = getSharedPreferences("com.AnonymousHippo.Palette.sharePreference", MODE_PRIVATE);
-        String userEmail = "test@test.com";
+        String userEmail = preferences.getString("userEmail", "test@test.com");
 
-        String[] aKeys = new String[3];
-        String[] aData = new String[3];
+        if (lastBuyerEmail.equals(userEmail)) {
+            Message msg = CanNotDialogHandler.obtainMessage();
+            CanNotDialogHandler.sendMessage(msg);
+        } else {
+            String[] aKeys = new String[3];
+            String[] aData = new String[3];
 
-        aKeys[0] = "auctionCode";
-        aKeys[1] = "newPrice";
-        aKeys[2] = "buyerEmail";
+            aKeys[0] = "auctionCode";
+            aKeys[1] = "newPrice";
+            aKeys[2] = "buyerEmail";
 
-        aData[0] = auctionCode;
-        aData[1] = String.valueOf(Integer.parseInt(priceEditText.getText().toString()) * 1000);
-        aData[2] = userEmail;
+            aData[0] = auctionCode;
+            aData[1] = String.valueOf(Integer.parseInt(priceEditText.getText().toString()) * 1000);
+            aData[2] = userEmail;
 
-        new Thread() {
-            public void run() {
-                result = HttpPostData.POST("gallery/auctionProcess/", aKeys, aData);
-
-                init();
-            }
-        }.start();
-
+            new Thread() {
+                public void run() {
+                    result = HttpPostData.POST("gallery/auctionProcess/", aKeys, aData);
+                    Message msg = successHandler.obtainMessage();
+                    successHandler.sendMessage(msg);
+                    init();
+                }
+            }.start();
+        }
     }
+
+    @SuppressLint("HandlerLeak")
+    Handler timerHandler = new Handler() {
+        @Override
+        @SuppressLint({"HandlerLeak", "SetTextI18n"})
+        public void handleMessage(Message msg) {
+            dateView.setText(leftTime);
+        }
+    };
 
     @SuppressLint("HandlerLeak")
     Handler initHandler = new Handler() {
@@ -176,6 +246,7 @@ public class AuctionActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             Glide.with(getApplicationContext()).load("http://141.164.40.63:8000/media/database/" + galleryCode + "/" + artNumber + ".jpg").into(mainView);
             titleTextView.setText(title);
+            contentsTextView.setText(content);
             startPriceTextView.setText("경매 시작가 : " + startPrice);
             highPriceTextView.setText("경매 최고가 : " + highPrice);
         }
@@ -220,6 +291,52 @@ public class AuctionActivity extends BaseActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
 
+                }
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
+    };
+
+    @SuppressLint("HandlerLeak")
+    Handler failDialogHandler = new Handler() {
+        @Override
+        @SuppressLint({"HandlerLeak", "SetTextI18n"})
+        public void handleMessage(Message msg) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(AuctionActivity.this);
+            builder.setTitle("정보를 불러오지 못했습니다");
+
+            builder.setPositiveButton("새로고침", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    Intent intent = new Intent(getApplicationContext(), AuctionActivity.class);
+                    startActivity(intent);
+                    overridePendingTransition(0, 0);
+                    finish();
+                }
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
+    };
+
+    @SuppressLint("HandlerLeak")
+    Handler successHandler = new Handler() {
+        @Override
+        @SuppressLint({"HandlerLeak", "SetTextI18n"})
+        public void handleMessage(Message msg) {
+            priceEditText.setText("");
+            payButton.setText("입찰");
+            AlertDialog.Builder builder = new AlertDialog.Builder(AuctionActivity.this);
+            builder.setTitle("입찰했습니다");
+
+            builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    Intent intent = new Intent(getApplicationContext(), AuctionActivity.class);
+                    startActivity(intent);
+                    overridePendingTransition(0, 0);
+                    finish();
                 }
             });
             AlertDialog alertDialog = builder.create();

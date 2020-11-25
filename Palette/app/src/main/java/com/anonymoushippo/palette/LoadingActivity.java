@@ -13,10 +13,12 @@ import androidx.core.content.ContextCompat;
 
 public class LoadingActivity extends BaseActivity {
 
-    private int PERMISSION_CHECK_INTERNET, PERMISSION_CHECK_RECORD, PERMISSION_CHECK_ACCESS;
+    private int PERMISSION_CHECK_INTERNET, PERMISSION_CHECK_RECORD, PERMISSION_CHECK_ACCESS, PERMISSION_CHECK_CAMERA, PERMISSION_CHECK_STORAGE;
     private final int PERMISSION_REQUEST_INTERNET = 1001;
     private final int PERMISSION_REQUEST_RECORD = 1002;
     private final int PERMISSION_REQUEST_ACCESS = 1003;
+    private final int PERMISSION_REQUEST_CAMERA = 1004;
+    private final int PERMISSION_REQUEST_STORAGE = 1005;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,8 @@ public class LoadingActivity extends BaseActivity {
         PERMISSION_CHECK_INTERNET = ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET);
         PERMISSION_CHECK_RECORD = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
         PERMISSION_CHECK_ACCESS = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE);
+        PERMISSION_CHECK_CAMERA = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        //PERMISSION_CHECK_STORAGE = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         // Open Check
         SharedPreferences preferences = getSharedPreferences("com.AnonymousHippo.Palette.sharePreference", MODE_PRIVATE);
@@ -46,7 +50,8 @@ public class LoadingActivity extends BaseActivity {
                 Intent intent;
                 if(PERMISSION_CHECK_RECORD == PackageManager.PERMISSION_GRANTED
                         && PERMISSION_CHECK_INTERNET == PackageManager.PERMISSION_GRANTED
-                        && PERMISSION_CHECK_ACCESS == PackageManager.PERMISSION_GRANTED) {
+                        && PERMISSION_CHECK_ACCESS == PackageManager.PERMISSION_GRANTED
+                        && PERMISSION_CHECK_CAMERA == PackageManager.PERMISSION_GRANTED) {
 
                     if (INTERNET_STATUS){
                         if(autoLoginFlag){
@@ -63,11 +68,10 @@ public class LoadingActivity extends BaseActivity {
                     intent = new Intent(getApplicationContext(), PermissionActivity.class);
                 }
 
-                intent = new Intent(getApplicationContext(), HomeActivity.class);
                 startActivity(intent);
                 overridePendingTransition(0, 0);
                 finish();
             }
-        }, 1500);
+        }, 1000);
     }
 }

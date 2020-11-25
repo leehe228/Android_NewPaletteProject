@@ -138,7 +138,7 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                 loadingView.setVisibility(View.VISIBLE);
                 SharedPreferences preferences = getSharedPreferences("com.AnonymousHippo.Palette.sharePreference", MODE_PRIVATE);
                 keys[0] = "email";
-                data[0] = "test@test.com";
+                data[0] = preferences.getString("userEmail", "test@test.com");
 
                 new Thread() {
                     public void run() {
@@ -281,8 +281,9 @@ public class HomeActivity extends BaseActivity implements SwipeRefreshLayout.OnR
 
     public void init() {
 
+        SharedPreferences preferences = getSharedPreferences("com.AnonymousHippo.Palette.sharePreference", MODE_PRIVATE);
         keys[0] = "email";
-        data[0] = "test@test.com";
+        data[0] = preferences.getString("userEmail", "test@test.com");
 
         new Thread() {
             public void run() {
