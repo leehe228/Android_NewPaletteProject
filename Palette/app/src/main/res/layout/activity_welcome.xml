@@ -13,7 +13,7 @@
             android:id="@+id/Welcome_TextView_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="160dp"
+            android:layout_marginTop="140dp"
             android:fontFamily="@font/quicksand"
             android:text="palette"
             android:textAlignment="center"
@@ -22,36 +22,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:paddingStart="60dp"
-            android:paddingEnd="60dp"
-            android:text="palette는 모두가 참여할 수 있는 오픈형 미술관 플랫폼 서비스입니다."
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/Welcome_TextView_title" />
-
-    <Button
-            android:id="@+id/Welcome_Button_test"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/basic_button_darkgray"
-            android:fontFamily="@font/nanumr"
-            android:stateListAnimator="@null"
-            android:text="테스트 유저로 로그인"
-            android:textColor="#FFFFFF"
-            android:textSize="18dp"
-            app:layout_constraintBottom_toTopOf="@id/Welcome_Button_signup"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="SpUsage" />
 
     <Button
             android:id="@+id/Welcome_Button_signup"

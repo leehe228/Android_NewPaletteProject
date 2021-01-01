@@ -429,7 +429,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00FFFFFF"
-                app:srcCompat="@drawable/un_portfolio_icon" />
+                app:srcCompat="@drawable/un_setting_icon" />
 
     </LinearLayout>
 

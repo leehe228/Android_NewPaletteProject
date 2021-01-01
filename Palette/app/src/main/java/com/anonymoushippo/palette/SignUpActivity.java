@@ -108,14 +108,14 @@ public class SignUpActivity extends BaseActivity {
             public void onClick(View v) {
                 if (step == 0 && insert1 && insert2 && insert3 && insert4 && insert5) {
                     email = emailEditText.getText().toString();
-                    String password;
+                    String password = password1EditText.getText().toString();
 
-                    try {
+                    /*try {
                         password = AES256Chiper.AES_Encode(password1EditText.getText().toString());
                     } catch (UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
                         e.printStackTrace();
                         password = password1EditText.getText().toString();
-                    }
+                    }*/
 
                     String name = nameEditText.getText().toString();
                     String age = ageEditText.getText().toString();

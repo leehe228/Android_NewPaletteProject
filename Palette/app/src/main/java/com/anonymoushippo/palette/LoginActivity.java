@@ -71,14 +71,14 @@ public class LoginActivity extends BaseActivity {
                 final String email = emailEditText.getText().toString();
 
                 // 암호화 인코딩
-                String password;
-                try {
+                String password = passwordEditText.getText().toString();
+                /*try {
                     password = AES256Chiper.AES_Encode(passwordEditText.getText().toString());
                 } catch (UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException
                         | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
                     e.printStackTrace();
                     password = passwordEditText.getText().toString();
-                }
+                }*/
 
                 keys[0] = "email";
                 keys[1] = "password";
